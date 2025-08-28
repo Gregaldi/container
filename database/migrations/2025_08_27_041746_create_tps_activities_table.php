@@ -16,8 +16,14 @@ return new class extends Migration
             $table->foreignId('container_id')->constrained()->onDelete('cascade');
             $table->dateTime('masuk')->nullable();
             $table->dateTime('keluar')->nullable();
-            $table->string('foto_masuk')->nullable();
-            $table->string('foto_keluar')->nullable();
+            $table->string('foto_masuk_depan')->nullable();
+            $table->string('foto_masuk_belakang')->nullable();
+            $table->string('foto_masuk_kanan')->nullable();
+            $table->string('foto_masuk_kiri')->nullable();
+            $table->string('foto_keluar_depan')->nullable();
+            $table->string('foto_keluar_belakang')->nullable();
+            $table->string('foto_keluar_kanan')->nullable();
+            $table->string('foto_keluar_kiri')->nullable();
             $table->timestamps();
         });
 

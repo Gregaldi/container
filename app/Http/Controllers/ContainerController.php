@@ -17,6 +17,9 @@ class ContainerController extends Controller
     // Simpan data container baru
     public function store(Request $request)
     {
+
+        try {
+            //code...
         $request->validate([
             'nomor_container' => 'required|string|unique:containers',
             'size' => 'required|string',
@@ -24,10 +27,17 @@ class ContainerController extends Controller
             'no_plat' => 'required|string',
             'no_seal' => 'required|string',
         ]);
-        dd($request);
 
         $container = Container::create($request->all());
         return response()->json($container, 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                        'success' => false,
+                        'message' => $th->getMessage(),
+                    ], 400);
+
+        }
+
     }
 
     // Detail container
@@ -40,7 +50,9 @@ class ContainerController extends Controller
     // Update container
     public function update(Request $request, $id)
     {
-        $container = Container::findOrFail($id);
+        try {
+            //code...
+       $container = Container::findOrFail($id);
 
         $request->validate([
             'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $id,
@@ -48,10 +60,19 @@ class ContainerController extends Controller
             'asal' => 'sometimes|string',
             'no_plat' => 'sometimes|string',
             'no_seal' => 'sometimes|string',
+            
         ]);
 
         $container->update($request->all());
         return response()->json($container);
+        } catch (\Throwable $th) {
+            return response()->json([
+                        'success' => false,
+                        'message' => $th->getMessage(),
+                    ], 400);
+
+        }
+       
     }
 
     // Hapus container

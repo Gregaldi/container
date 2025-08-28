@@ -11,7 +11,7 @@ Route::get('/ping', function () {
     return response()->json(['message' => 'API OK']);
 });
 
-Route::post('/containers', [ContainerController::class, 'store']);
-// Route::apiResource('containers', ContainerController::class);
-// Route::apiResource('terminal-activities', TerminalActivityController::class);
-// Route::apiResource('tps-activities', TpsActivityController::class);
+// Route::post('/containers', [ContainerController::class, 'store']);
+Route::apiResource('containers', ContainerController::class);
+Route::apiResource('terminal-activities', TerminalActivityController::class);
+Route::apiResource('tps-activities', TpsActivityController::class);
