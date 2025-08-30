@@ -20,7 +20,7 @@ class TerminalActivityController extends Controller
           try {
             //code...
         $request->validate([
-            'container_id' => 'required|exists:containers,id',
+            'container_no_plat' => 'required|exists:containers,no_plat',
             'masuk' => 'required|date',
             'keluar' => 'nullable|date',
             'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -88,61 +88,23 @@ class TerminalActivityController extends Controller
         return response()->json($activity);
     }
 
-    // Update activity Terminal
-  public function update(Request $request, $id)
+   // Update activity Terminal
+public function update(Request $request, $id)
 {
     try {
         $activity = TerminalActivity::findOrFail($id);
 
+        // Validasi
         $request->validate([
-            'masuk' => 'nullable|date',
-            'keluar' => 'required|date',
-            'foto_masuk_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-        dd($request);
-
-        // Ambil semua data kecuali file foto
-        $data = $request->except([
-            'masuk','keluar',
-            'foto_masuk_depan',
-            'foto_keluar_depan',
-            'foto_masuk_belakang',
-            'foto_keluar_belakang',
-            'foto_masuk_kiri',
-            'foto_keluar_kiri',
-            'foto_masuk_kanan',
-            'foto_keluar_kanan'
+            'masuk' => 'required|date',
+            'keluar' => 'nullable|date',
         ]);
 
+        // Ambil hanya field jam masuk / keluar
+        $data = $request->only(['masuk', 'keluar']);
 
-        // List field foto untuk looping
-        $fotoFields = [
-            'foto_masuk_depan',
-            'foto_keluar_depan',
-            'foto_masuk_belakang',
-            'foto_keluar_belakang',
-            'foto_masuk_kiri',
-            'foto_keluar_kiri',
-            'foto_masuk_kanan',
-            'foto_keluar_kanan',
-        ];
-
-        foreach ($fotoFields as $field) {
-            if ($request->hasFile($field)) {
-                $path = $request->file($field)->store('terminal', 'public');
-                $data[$field] = url('storage/' . $path);
-            }
-        }
-
-        // $activity->update($data);
-         $activity->update($request->all());
+        // Update hanya field yang dikirim
+        $activity->update($data);
 
         return response()->json([
             'success' => true,
@@ -157,6 +119,7 @@ class TerminalActivityController extends Controller
         ], 400);
     }
 }
+
 
 
     // Hapus activity Terminal

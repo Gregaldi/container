@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('no_seal');
             $table->string('foto_nomor_container')->nullable();
             $table->string('foto_no_plat')->nullable();
-            $table->string('foto_no_seal')->nullable();
+            $table->string('foto_no_seal');
             $table->timestamps();
         });
  

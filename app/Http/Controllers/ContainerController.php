@@ -25,12 +25,12 @@ class ContainerController extends Controller
         'no_plat'              => 'required|string|unique:containers,no_plat',
         'no_seal'              => 'required|string',
         'foto_no_plat'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        'foto_nomor_seal'      => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        'foto_no_seal'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'foto_nomor_container' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // ambil semua data kecuali file foto
-        $data = $request->except(['foto_no_plat','foto_nomor_seal','foto_nomor_container']);
+        $data = $request->except(['foto_no_plat','foto_no_seal','foto_nomor_container']);
 
         // buat folder khusus per container biar rapi
         $folder = 'containers/'.$request->nomor_container;
@@ -42,9 +42,9 @@ class ContainerController extends Controller
             $data['foto_no_plat'] = url('storage/' . $path);
         }
 
-        if ($request->hasFile('foto_nomor_seal')) {
-            $path = $request->file('foto_nomor_seal')->store($folder, 'public');
-            $data['foto_nomor_seal'] = url('storage/' . $path);
+        if ($request->hasFile('foto_no_seal')) {
+            $path = $request->file('foto_no_seal')->store($folder, 'public');
+            $data['foto_no_seal'] = url('storage/' . $path);
         }
 
         if ($request->hasFile('foto_nomor_container')) {
