@@ -21,16 +21,16 @@ class TerminalActivityController extends Controller
             //code...
         $request->validate([
             'container_id' => 'required|exists:containers,id',
-            'masuk' => 'nullable|date',
+            'masuk' => 'required|date',
             'keluar' => 'nullable|date',
-            'foto_masuk_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_masuk_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_masuk_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
     $data = $request->except(['foto_masuk_depan','foto_keluar_depan','foto_masuk_belakang','foto_keluar_belakang','foto_masuk_kiri','foto_keluar_kiri','foto_masuk_kanan','foto_keluar_kanan']);
@@ -96,7 +96,7 @@ class TerminalActivityController extends Controller
 
         $request->validate([
             'masuk' => 'nullable|date',
-            'keluar' => 'nullable|date',
+            'keluar' => 'required|date',
             'foto_masuk_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_keluar_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_masuk_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
