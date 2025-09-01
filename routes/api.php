@@ -14,4 +14,6 @@ Route::get('/ping', function () {
 // Route::post('/containers', [ContainerController::class, 'store']);
 Route::apiResource('containers', ContainerController::class);
 Route::apiResource('terminal-activities', TerminalActivityController::class);
+Route::post('/terminal-activities/update/{no_plat}', [TerminalActivityController::class, 'updateByPlat']);
+Route::post('/tps-activities/update/{no_plat}', [TpsActivityController::class, 'updateByPlat']);
 Route::apiResource('tps-activities', TpsActivityController::class);

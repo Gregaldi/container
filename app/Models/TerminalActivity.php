@@ -12,7 +12,11 @@ class TerminalActivity extends Model
         'masuk',
         'keluar',
         'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
-        'foto_keluar_depan','foto_keluar_belakang','foto_keluar_kanan','foto_keluar_kiri'
+        'foto_keluar_depan',
+        'foto_keluar_belakang',
+        'foto_keluar_kiri',
+        'foto_keluar_kanan',
+        
     ];
 
     public function container()

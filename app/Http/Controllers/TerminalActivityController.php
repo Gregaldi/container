@@ -19,44 +19,33 @@ class TerminalActivityController extends Controller
     {
           try {
             //code...
-        $request->validate([
-         'container_no_plat' => [
-                'required',
-                'exists:containers,no_plat',
-                'unique:terminal_activities,container_no_plat' // <== tambahkan ini
-            ],
-            'masuk' => 'required|date',
-            'keluar' => 'nullable|date',
-            'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+            $request->validate([
+                'container_no_plat' => 'required|exists:containers,no_plat',
+                'masuk' => 'required|date',
+                'keluar' => 'nullable|date',
+                'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                // 'foto_keluar_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'foto_masuk_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                // 'foto_keluar_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'foto_masuk_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                // 'foto_keluar_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                // 'foto_keluar_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
 
-    $data = $request->except(['foto_masuk_depan','foto_keluar_depan','foto_masuk_belakang','foto_keluar_belakang','foto_masuk_kiri','foto_keluar_kiri','foto_masuk_kanan','foto_keluar_kanan']);
+    $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan']);
 
         if ($request->hasFile('foto_masuk_depan')) {
             $path = $request->file('foto_masuk_depan')->store('terminal', 'public');
             $data['foto_masuk_depan'] = url('storage/' . $path);
         }
 
-        if ($request->hasFile('foto_keluar_depan')) {
-            $path = $request->file('foto_keluar_depan')->store('terminal', 'public');
-            $data['foto_keluar_depan'] = url('storage/' . $path);
-        }
 
         if ($request->hasFile('foto_masuk_belakang')) {
             $path = $request->file('foto_masuk_belakang')->store('terminal', 'public');
             $data['foto_masuk_belakang'] = url('storage/' . $path);
         }
-        if ($request->hasFile('foto_keluar_belakang')) {
-            $path = $request->file('foto_keluar_belakang')->store('terminal', 'public');
-            $data['foto_keluar_belakang'] = url('storage/' . $path);
-        }
+
         if ($request->hasFile('foto_masuk_kiri')) {
             $path = $request->file('foto_masuk_kiri')->store('terminal', 'public');
             $data['foto_masuk_kiri'] = url('storage/' . $path);
@@ -93,26 +82,49 @@ class TerminalActivityController extends Controller
     }
 
    // Update activity Terminal
-public function update(Request $request, $id)
+  public function updateByPlat(Request $request, $no_plat)
 {
     try {
-        $activity = TerminalActivity::findOrFail($id);
+        $activity = TerminalActivity::where('container_no_plat', $no_plat)->firstOrFail();
 
         // Validasi
         $request->validate([
-            'masuk' => 'required|date',
-            'keluar' => 'nullable|date',
+            'masuk'               => 'required|date',
+            'keluar'              => 'required|date',
+            'foto_keluar_depan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_belakang'=> 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kiri'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Ambil hanya field jam masuk / keluar
         $data = $request->only(['masuk', 'keluar']);
 
-        // Update hanya field yang dikirim
+        // Upload semua foto keluar
+        foreach (['foto_keluar_depan','foto_keluar_belakang','foto_keluar_kiri','foto_keluar_kanan'] as $field) {
+            if ($request->hasFile($field)) {
+                // hapus lama jika ada
+                if ($activity->$field && \Storage::exists('public/'.$activity->$field)) {
+                    \Storage::delete('public/'.$activity->$field);
+                }
+                // simpan baru
+                  if ($request->hasFile($field)) {
+                        $path = $request->file($field)->store('terminal', 'public');
+                        $data[$field] = url('storage/' . $path); // simpan URL penuh
+                    }
+            }
+        }
+
         $activity->update($data);
+
+        // response dengan full url
+        // $activity->foto_keluar_depan    = $activity->foto_keluar_depan ? url('storage/'.$activity->foto_keluar_depan) : null;
+        // $activity->foto_keluar_belakang = $activity->foto_keluar_belakang ? url('storage/'.$activity->foto_keluar_belakang) : null;
+        // $activity->foto_keluar_kiri     = $activity->foto_keluar_kiri ? url('storage/'.$activity->foto_keluar_kiri) : null;
+        // $activity->foto_keluar_kanan    = $activity->foto_keluar_kanan ? url('storage/'.$activity->foto_keluar_kanan) : null;
 
         return response()->json([
             'success' => true,
-            'message' => 'Terminal activity berhasil diperbarui',
+            'message' => 'Terminal activity berhasil diperbarui berdasarkan plat nomor',
             'data' => $activity
         ]);
 
@@ -126,15 +138,12 @@ public function update(Request $request, $id)
 
 
 
-// Hapus activity Terminal berdasarkan plat nomor
-public function destroy($no_plat)
-{
-    $activity = TerminalActivity::where('container_no_plat', $no_plat)->firstOrFail();
-    $activity->delete();
+    // Hapus activity Terminal
+    public function destroy($id)
+    {
+        $activity = TerminalActivity::findOrFail($id);
+        $activity->delete();
 
-    return response()->json([
-        'message' => 'Terminal Activity dengan plat ' . $no_plat . ' berhasil dihapus'
-    ]);
-}
-
+        return response()->json(['message' => 'Terminal Activity deleted successfully']);
+    }
 }

@@ -20,56 +20,48 @@ class TpsActivityController extends Controller
         try {
             //code...
               $request->validate([
-            'container_id' => 'required|exists:containers,id',
-            'masuk' => 'nullable|date',
+            // 'container_id' => 'required|exists:containers,id',
+            'container_no_plat' => [
+                'required',
+                'exists:containers,no_plat',
+                'unique:tps_activities,container_no_plat' // <== tambahkan ini
+            ],
+            'masuk' => 'required|date',
             'keluar' => 'nullable|date',
-            'foto_masuk_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_masuk_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_keluar_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+
+            'foto_masuk_belakang' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+
+            'foto_masuk_kiri' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+
+            'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+
         ]);
 
        
-    $data = $request->except(['foto_masuk_depan','foto_keluar_depan','foto_masuk_belakang','foto_keluar_belakang','foto_masuk_kiri','foto_keluar_kiri','foto_masuk_kanan','foto_keluar_kanan']);
+    $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan',]);
 
         if ($request->hasFile('foto_masuk_depan')) {
             $path = $request->file('foto_masuk_depan')->store('tps', 'public');
             $data['foto_masuk_depan'] = url('storage/' . $path);
         }
 
-        if ($request->hasFile('foto_keluar_depan')) {
-            $path = $request->file('foto_keluar_depan')->store('tps', 'public');
-            $data['foto_keluar_depan'] = url('storage/' . $path);
-        }
 
         if ($request->hasFile('foto_masuk_belakang')) {
             $path = $request->file('foto_masuk_belakang')->store('tps', 'public');
             $data['foto_masuk_belakang'] = url('storage/' . $path);
         }
-        if ($request->hasFile('foto_keluar_belakang')) {
-            $path = $request->file('foto_keluar_belakang')->store('tps', 'public');
-            $data['foto_keluar_belakang'] = url('storage/' . $path);
-        }
+     
         if ($request->hasFile('foto_masuk_kiri')) {
             $path = $request->file('foto_masuk_kiri')->store('tps', 'public');
             $data['foto_masuk_kiri'] = url('storage/' . $path);
         }
-        if ($request->hasFile('foto_keluar_kiri')) {
-            $path = $request->file('foto_keluar_kiri')->store('tps', 'public');
-            $data['foto_keluar_kiri'] = url('storage/' . $path);
-        }
+      
         if ($request->hasFile('foto_masuk_kanan')) {
-            $path = $request->file('foto_masuk_kanan')->store('tps         ', 'public');
+            $path = $request->file('foto_masuk_kanan')->store('tps', 'public');
             $data['foto_masuk_kanan'] = url('storage/' . $path);
         }
-        if ($request->hasFile('foto_keluar_kanan')) {
-            $path = $request->file('foto_keluar_kanan')->store('tps', 'public');
-            $data['foto_keluar_kanan'] = url('storage/' . $path);
-        }       
+            
 
         $activity = TpsActivity::create($data);
         return response()->json($activity, 201);
@@ -91,66 +83,103 @@ class TpsActivityController extends Controller
     }
 
     // Update activity TPS
-    public function update(Request $request, $id)
-    {
-        try {
-            $activity = TpsActivity::findOrFail($id);
+   
+public function update(Request $request, $no_plat)
+{
+    try {
+        // $activity = TpsActivity::findOrFail($id);
+  // $activity = TerminalActivity::findOrFail($id);
+         $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+        // Validasi
+        $request->validate([
+            'masuk' => 'required|date',
+            'keluar' => 'nullable|date',
+        ]);
 
-            // validasi fleksibel (semua field boleh kosong)
-            $request->validate([
-                'masuk' => 'date',
-                'keluar' => 'date',
-                'foto_masuk_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_keluar_depan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_masuk_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_keluar_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_masuk_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_keluar_kiri' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_masuk_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_keluar_kanan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            ]);
+        // Ambil hanya field jam masuk / keluar
+        $data = $request->only(['masuk', 'keluar']);
 
-            // ambil semua data kecuali file
-            $data = $request->except([
-                'foto_masuk_depan','foto_keluar_depan',
-                'foto_masuk_belakang','foto_keluar_belakang',
-                'foto_masuk_kiri','foto_keluar_kiri',
-                'foto_masuk_kanan','foto_keluar_kanan'
-            ]);
+        // Update hanya field yang dikirim
+        $activity->update($data);
 
-            // upload file kalau ada
-            foreach ([
-                'foto_masuk_depan','foto_keluar_depan',
-                'foto_masuk_belakang','foto_keluar_belakang',
-                'foto_masuk_kiri','foto_keluar_kiri',
-                'foto_masuk_kanan','foto_keluar_kanan'
-            ] as $field) {
-                if ($request->hasFile($field)) {
-                    $path = $request->file($field)->store('tps', 'public');
-                    $data[$field] = url('storage/' . $path);
-                }
-            }
+        return response()->json([
+            'success' => true,
+            'message' => 'TPS activity berhasil diperbarui',
+            'data' => $activity
+        ]);
 
-            $activity->update($data);
-            dd($activity);
-
-            return response()->json($activity);
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => false,
-                'message' => $th->getMessage(),
-            ], 400);
-        }
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => $th->getMessage(),
+        ], 400);
     }
+}
+
+  public function updateByPlat(Request $request, $no_plat)
+{
+    try {
+        $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+
+        // Validasi
+        $request->validate([
+            'masuk'               => 'required|date',
+            'keluar'              => 'required|date',
+            'foto_keluar_depan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_belakang'=> 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kiri'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $data = $request->only(['masuk', 'keluar']);
+
+        // Upload semua foto keluar
+        foreach (['foto_keluar_depan','foto_keluar_belakang','foto_keluar_kiri','foto_keluar_kanan'] as $field) {
+            if ($request->hasFile($field)) {
+                // hapus lama jika ada
+                if ($activity->$field && \Storage::exists('public/'.$activity->$field)) {
+                    \Storage::delete('public/'.$activity->$field);
+                }
+                // simpan baru
+            if ($request->hasFile($field)) {
+                $path = $request->file($field)->store('tps', 'public');
+                $data[$field] = url('storage/' . $path); // simpan URL penuh
+            }
+            }
+        }
+
+        $activity->update($data);
+
+        // response dengan full url
+        // $activity->foto_keluar_depan    = $activity->foto_keluar_depan ? url('storage/'.$activity->foto_keluar_depan) : null;
+        // $activity->foto_keluar_belakang = $activity->foto_keluar_belakang ? url('storage/'.$activity->foto_keluar_belakang) : null;
+        // $activity->foto_keluar_kiri     = $activity->foto_keluar_kiri ? url('storage/'.$activity->foto_keluar_kiri) : null;
+        // $activity->foto_keluar_kanan    = $activity->foto_keluar_kanan ? url('storage/'.$activity->foto_keluar_kanan) : null;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'TPS activity berhasil diperbarui berdasarkan plat nomor',
+            'data' => $activity
+        ]);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => $th->getMessage(),
+        ], 400);
+    }
+}
 
 
     // Hapus activity TPS
-    public function destroy($id)
-    {
-        $activity = TpsActivity::findOrFail($id);
-        $activity->delete();
+  
+    public function destroy($no_plat)
+{
+    $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+    $activity->delete();
 
-        return response()->json(['message' => 'TPS Activity deleted successfully']);
-    }
+    return response()->json([
+        'message' => 'TPS Activity dengan plat ' . $no_plat . ' berhasil dihapus'
+    ]);
+}
 }
