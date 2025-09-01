@@ -20,7 +20,11 @@ class TerminalActivityController extends Controller
           try {
             //code...
         $request->validate([
-            'container_no_plat' => 'required|exists:containers,no_plat',
+         'container_no_plat' => [
+                'required',
+                'exists:containers,no_plat',
+                'unique:terminal_activities,container_no_plat' // <== tambahkan ini
+            ],
             'masuk' => 'required|date',
             'keluar' => 'nullable|date',
             'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -62,7 +66,7 @@ class TerminalActivityController extends Controller
             $data['foto_keluar_kiri'] = url('storage/' . $path);
         }
         if ($request->hasFile('foto_masuk_kanan')) {
-            $path = $request->file('foto_masuk_kanan')->store('terminal         ', 'public');
+            $path = $request->file('foto_masuk_kanan')->store('terminal', 'public');
             $data['foto_masuk_kanan'] = url('storage/' . $path);
         }
         if ($request->hasFile('foto_keluar_kanan')) {
