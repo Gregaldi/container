@@ -76,39 +76,53 @@ class ContainerController extends Controller
     }
 
     // Update container
-    public function update(Request $request, $id)
+    public function update(Request $request, $no_plat)
     {
         try {
-            //code...
-       $container = Container::findOrFail($id);
+            // Cari container berdasarkan no_plat
+            $container = Container::where('no_plat', $no_plat)->firstOrFail();
 
-        $request->validate([
-            'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $id,
-            'size' => 'sometimes|string',
-            'asal' => 'sometimes|string',
-            'no_plat' => 'sometimes|string',
-            'no_seal' => 'sometimes|string',
-            
-        ]);
+            $request->validate([
+                // 'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
+                'size' => 'sometimes|string',
+                'asal' => 'sometimes|string',
+                'no_plat' => 'sometimes|string|unique:containers,no_plat,' . $container->id,
+                'no_seal' => 'sometimes|string',
+            ]);
 
-        $container->update($request->all());
-        return response()->json($container);
+            $container->update($request->all());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Container berhasil diupdate',
+                'data'    => $container,
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                        'success' => false,
-                        'message' => $th->getMessage(),
-                    ], 400);
-
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 400);
         }
-       
     }
+
 
     // Hapus container
-    public function destroy($id)
+    public function destroy($no_plat)
     {
-        $container = Container::findOrFail($id);
-        $container->delete();
+        try {
+            $container = Container::where('no_plat', $no_plat)->firstOrFail();
+            $container->delete();
 
-        return response()->json(['message' => 'Container deleted successfully']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Container deleted successfully'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 400);
+        }
     }
+
 }
