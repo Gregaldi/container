@@ -126,12 +126,15 @@ public function update(Request $request, $id)
 
 
 
-    // Hapus activity Terminal
-    public function destroy($id)
-    {
-        $activity = TerminalActivity::findOrFail($id);
-        $activity->delete();
+// Hapus activity Terminal berdasarkan plat nomor
+public function destroy($no_plat)
+{
+    $activity = TerminalActivity::where('container_no_plat', $no_plat)->firstOrFail();
+    $activity->delete();
 
-        return response()->json(['message' => 'Terminal Activity deleted successfully']);
-    }
+    return response()->json([
+        'message' => 'Terminal Activity dengan plat ' . $no_plat . ' berhasil dihapus'
+    ]);
+}
+
 }
