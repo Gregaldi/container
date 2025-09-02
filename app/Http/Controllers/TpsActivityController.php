@@ -37,6 +37,16 @@ class TpsActivityController extends Controller
             'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
+         $alreadyIn = TerminalActivity::where('container_no_plat', $request->container_no_plat)
+            ->whereNull('keluar') // artinya masih ada di dalam
+            ->exists();
+
+        if ($alreadyIn) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah masuk dan belum keluar.',
+            ], 422);
+        }
 
        
     $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan',]);
@@ -130,6 +140,19 @@ public function update(Request $request, $no_plat)
             'foto_keluar_kiri'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+             // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
+        $alreadyRecorded = TpsActivity::where('container_no_plat', $no_plat)
+            ->whereNotNull('masuk')
+            ->whereNotNull('keluar')
+            ->exists();
+
+        if ($alreadyRecorded) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kendaraan dengan plat ' . $no_plat . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
+            ], 422);
+        }
 
         $data = $request->only(['masuk', 'keluar']);
 
