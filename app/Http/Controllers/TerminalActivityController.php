@@ -89,7 +89,7 @@ class TerminalActivityController extends Controller
 
         // Validasi
         $request->validate([
-            'masuk'               => 'required|date',
+            'masuk'               => 'nullable|date',
             'keluar'              => 'required|date',
             'foto_keluar_depan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'foto_keluar_belakang'=> 'required|image|mimes:jpg,jpeg,png|max:2048',
