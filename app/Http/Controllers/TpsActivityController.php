@@ -37,7 +37,7 @@ class TpsActivityController extends Controller
             'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
-         $alreadyIn = TerminalActivity::where('container_no_plat', $request->container_no_plat)
+         $alreadyIn = TpsActivity::where('container_no_plat', $request->container_no_plat)
             ->whereNull('keluar') // artinya masih ada di dalam
             ->exists();
 
