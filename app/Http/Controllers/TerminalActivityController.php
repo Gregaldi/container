@@ -107,18 +107,18 @@ class TerminalActivityController extends Controller
             'foto_keluar_kiri'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
-           // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TerminalActivity::where('container_no_plat', $request->container_no_plat)
-            ->whereNotNull('masuk')
-            ->whereNotNull('keluar')
-            ->exists();
+        //    // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
+        // $alreadyRecorded = TerminalActivity::where('container_no_plat', $request->container_no_plat)
+        //     ->whereNotNull('masuk')
+        //     ->whereNotNull('keluar')
+        //     ->exists();
 
-        if ($alreadyRecorded) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
-            ], 422);
-        }
+        // if ($alreadyRecorded) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
+        //     ], 422);
+        // }
 
         $data = $request->only(['masuk', 'keluar']);
 
