@@ -10,7 +10,7 @@ class TpsActivityController extends Controller
     // Ambil semua activity TPS
     public function index()
     {
-        $activities = TpsActivity::with('container')->get();
+        $activities = TpsActivity::with('containers')->get();
         return response()->json($activities);
     }
 
