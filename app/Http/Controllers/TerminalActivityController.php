@@ -24,7 +24,7 @@ class TerminalActivityController extends Controller
                 'container_no_container' => [
                 'required',
                 'exists:containers,nomor_container',
-                'unique:tps_activities,container_no_container' // <== tambahkan ini
+                'unique:terminal_activities,container_no_container' // <== tambahkan ini
             ],
                 'masuk' => 'required|date',
                 'keluar' => 'nullable|date',
