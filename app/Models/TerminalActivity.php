@@ -8,7 +8,7 @@ class TerminalActivity extends Model
 {
     //
     protected $fillable = [
-        'nomor_container',
+        'container_number',
         'masuk',
         'keluar',
         'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
