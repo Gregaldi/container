@@ -10,7 +10,7 @@ class TerminalActivityController extends Controller
     // Ambil semua activity Terminal
     public function index()
     {
-        $activities = TerminalActivity::with('container')->get();
+        $activities = TerminalActivity::with('containers')->get();
         return response()->json($activities);
     }
 
@@ -83,7 +83,7 @@ class TerminalActivityController extends Controller
     // Detail activity Terminal
     public function show($id)
     {
-        $activity = TerminalActivity::with('container')->findOrFail($id);
+        $activity = TerminalActivity::with('containers')->findOrFail($id);
         return response()->json($activity);
     }
 
