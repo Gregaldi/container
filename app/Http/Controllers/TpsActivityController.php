@@ -21,10 +21,10 @@ class TpsActivityController extends Controller
             //code...
               $request->validate([
             // 'container_id' => 'required|exists:containers,id',
-            'container_no_plat' => [
+            'container_no_container' => [
                 'required',
-                'exists:containers,no_plat',
-                'unique:tps_activities,container_no_plat' // <== tambahkan ini
+                'exists:containers,nomor_container',
+                'unique:tps_activities,container_no_container' // <== tambahkan ini
             ],
             'masuk' => 'required|date',
             'keluar' => 'nullable|date',
@@ -37,16 +37,7 @@ class TpsActivityController extends Controller
             'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
-        //  $alreadyIn = TpsActivity::where('container_no_plat', $request->container_no_plat)
-        //     ->whereNull('keluar') // artinya masih ada di dalam
-        //     ->exists();
-
-        // if ($alreadyIn) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah masuk dan belum keluar.',
-        //     ], 422);
-        // }
+     
 
        
     $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan',]);
@@ -94,12 +85,12 @@ class TpsActivityController extends Controller
 
     // Update activity TPS
    
-public function update(Request $request, $no_plat)
+public function update(Request $request, $nomor_container)
 {
     try {
         // $activity = TpsActivity::findOrFail($id);
   // $activity = TerminalActivity::findOrFail($id);
-         $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+         $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
         // Validasi
         $request->validate([
             'masuk' => 'required|date',
@@ -126,10 +117,10 @@ public function update(Request $request, $no_plat)
     }
 }
 
-  public function updateByPlat(Request $request, $no_plat)
+  public function updateByPlat(Request $request, $nomor_container)
 {
     try {
-        $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+        $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
 
         // Validasi
         $request->validate([
@@ -142,7 +133,7 @@ public function update(Request $request, $no_plat)
         ]);
 
              // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TpsActivity::where('container_no_plat', $no_plat)
+        $alreadyRecorded = TpsActivity::where('container_no_container', $nomor_container)
             ->whereNotNull('masuk')
             ->whereNotNull('keluar')
             ->exists();
@@ -150,7 +141,7 @@ public function update(Request $request, $no_plat)
         if ($alreadyRecorded) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kendaraan dengan plat ' . $no_plat . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
+                'message' => 'Kendaraan dengan nomor container ' . $nomor_container . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
             ], 422);
         }
 
@@ -196,13 +187,13 @@ public function update(Request $request, $no_plat)
 
     // Hapus activity TPS
   
-    public function destroy($no_plat)
+    public function destroy($nomor_container)
 {
-    $activity = TpsActivity::where('container_no_plat', $no_plat)->firstOrFail();
+    $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
     $activity->delete();
 
     return response()->json([
-        'message' => 'TPS Activity dengan plat ' . $no_plat . ' berhasil dihapus'
+        'message' => 'TPS Activity dengan container ' . $nomor_container . ' berhasil dihapus'
     ]);
 }
 }
