@@ -88,7 +88,7 @@ class TpsActivityController extends Controller
     // Detail activity
     public function show($id)
     {
-        $activity = TpsActivity::with('container')->findOrFail($id);
+        $activity = TpsActivity::with('containers')->findOrFail($id);
         return response()->json($activity);
     }
 
