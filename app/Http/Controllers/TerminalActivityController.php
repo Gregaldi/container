@@ -20,12 +20,12 @@ class TerminalActivityController extends Controller
           try {
             //code...
             $request->validate([
-                // 'container_no_container' => 'required|exists:containers,nomor_container',
-                'container_no_container' => [
-                'required',
-                'exists:containers,nomor_container',
-                'unique:terminal_activities,container_no_container' // <== tambahkan ini
-            ],
+                'container_no_container' => 'required|exists:containers,nomor_container',
+            //     'container_no_container' => [
+            //     'required',
+            //     'exists:containers,nomor_container',
+            //     'unique:terminal_activities,container_no_container' // <== tambahkan ini
+            // ],
                 'masuk' => 'required|date',
                 'keluar' => 'nullable|date',
                 'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
