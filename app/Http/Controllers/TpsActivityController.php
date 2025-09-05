@@ -37,7 +37,16 @@ class TpsActivityController extends Controller
             'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
-     
+         $alreadyIn = TpsActivity::where('container_no_plat', $request->container_no_plat)
+            ->whereNull('keluar') // artinya masih ada di dalam
+            ->exists();
+
+        if ($alreadyIn) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah masuk dan belum keluar.',
+            ], 422);
+        }
 
        
     $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan',]);

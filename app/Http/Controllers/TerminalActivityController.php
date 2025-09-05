@@ -20,12 +20,7 @@ class TerminalActivityController extends Controller
           try {
             //code...
             $request->validate([
-                'container_number' => 'required|exists:containers,nomor_container',
-            //     'container_no_container' => [
-            //     'required',
-            //     'exists:containers,nomor_container',
-            //     'unique:terminal_activities,container_no_container' // <== tambahkan ini
-            // ],
+                'container_no_plat' => 'required|exists:containers,no_plat',
                 'masuk' => 'required|date',
                 'keluar' => 'nullable|date',
                 'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -37,7 +32,17 @@ class TerminalActivityController extends Controller
                 'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
                 // 'foto_keluar_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             ]);
-      
+             // ✅ Cek apakah plat ini sudah ada di activity yang belum keluar
+        // $alreadyIn = TerminalActivity::where('container_no_plat', $request->container_no_plat)
+        //     ->whereNull('keluar') // artinya masih ada di dalam
+        //     ->exists();
+
+        // if ($alreadyIn) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah masuk dan belum keluar.',
+        //     ], 422);
+        // }
 
     $data = $request->except(['foto_masuk_depan','foto_masuk_belakang','foto_masuk_kiri','foto_masuk_kanan']);
 
@@ -88,10 +93,10 @@ class TerminalActivityController extends Controller
     }
 
    // Update activity Terminal
-  public function updateByPlat(Request $request, $no_container)
+  public function updateByPlat(Request $request, $no_plat)
 {
     try {
-        $activity = TerminalActivity::where('container_number', $no_container)->firstOrFail();
+        $activity = TerminalActivity::where('container_no_plat', $no_plat)->firstOrFail();
 
         // Validasi
         $request->validate([
@@ -103,17 +108,17 @@ class TerminalActivityController extends Controller
             'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
            // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TerminalActivity::where('container_number', $request->no_container)
-            ->whereNotNull('masuk')
-            ->whereNotNull('keluar')
-            ->exists();
+        // $alreadyRecorded = TerminalActivity::where('container_no_plat', $request->container_no_plat)
+        //     ->whereNotNull('masuk')
+        //     ->whereNotNull('keluar')
+        //     ->exists();
 
-        if ($alreadyRecorded) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kendaraan dengan plat ' . $request->no_container . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
-            ], 422);
-        }
+        // if ($alreadyRecorded) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah tercatat masuk & keluar, tidak bisa disimpan lagi.',
+        //     ], 422);
+        // }
 
         $data = $request->only(['masuk', 'keluar']);
 
