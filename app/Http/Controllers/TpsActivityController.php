@@ -21,10 +21,10 @@ class TpsActivityController extends Controller
             //code...
               $request->validate([
             // 'container_id' => 'required|exists:containers,id',
-            'container_no_container' => [
+            'nomor_container' => [
                 'required',
                 'exists:containers,nomor_container',
-                'unique:tps_activities,container_no_container' // <== tambahkan ini
+                'unique:tps_activities,nomor_container' // <== tambahkan ini
             ],
             'masuk' => 'required|date',
             'keluar' => 'nullable|date',
@@ -90,7 +90,7 @@ public function update(Request $request, $nomor_container)
     try {
         // $activity = TpsActivity::findOrFail($id);
   // $activity = TerminalActivity::findOrFail($id);
-         $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
+         $activity = TpsActivity::where('nomor_container', $nomor_container)->firstOrFail();
         // Validasi
         $request->validate([
             'masuk' => 'required|date',
@@ -120,7 +120,7 @@ public function update(Request $request, $nomor_container)
   public function updateByPlat(Request $request, $nomor_container)
 {
     try {
-        $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
+        $activity = TpsActivity::where('nomor_container', $nomor_container)->firstOrFail();
 
         // Validasi
         $request->validate([
@@ -133,7 +133,7 @@ public function update(Request $request, $nomor_container)
         ]);
 
              // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TpsActivity::where('container_no_container', $nomor_container)
+        $alreadyRecorded = TpsActivity::where('nomor_container', $nomor_container)
             ->whereNotNull('masuk')
             ->whereNotNull('keluar')
             ->exists();
@@ -189,7 +189,7 @@ public function update(Request $request, $nomor_container)
   
     public function destroy($nomor_container)
 {
-    $activity = TpsActivity::where('container_no_container', $nomor_container)->firstOrFail();
+    $activity = TpsActivity::where('nomor_container', $nomor_container)->firstOrFail();
     $activity->delete();
 
     return response()->json([
