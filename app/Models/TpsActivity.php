@@ -16,7 +16,7 @@ class TpsActivity extends Model
     // }
     public function containers()
         {
-            return $this->hasMany(Container::class, 'no_plat', 'no_plat');
+            return $this->hasMany(Container::class, 'no_plat', 'container_no_plat');
         }
     
 }
