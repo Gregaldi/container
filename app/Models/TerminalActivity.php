@@ -19,8 +19,8 @@ class TerminalActivity extends Model
         
     ];
 
-    public function containers()
+    public function container()
     {
-        return $this->belongsToMany(Container::class);
+        return $this->belongsTo(Container::class);
     }
 }
