@@ -18,9 +18,8 @@ class TerminalActivity extends Model
         'foto_keluar_kanan',
         
     ];
-
-    public function container()
-    {
-        return $this->belongsTo(Container::class, 'no_plat', 'no_plat');
-    }
+    public function containers()
+        {
+            return $this->hasMany(Container::class, 'no_plat', 'no_plat');
+        }
 }
