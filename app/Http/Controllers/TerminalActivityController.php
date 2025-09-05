@@ -20,7 +20,7 @@ class TerminalActivityController extends Controller
           try {
             //code...
             $request->validate([
-                'container_no_container' => 'required|exists:containers,nomor_container',
+                'nomor_container' => 'required|exists:containers,nomor_container',
             //     'container_no_container' => [
             //     'required',
             //     'exists:containers,nomor_container',
@@ -91,7 +91,7 @@ class TerminalActivityController extends Controller
   public function updateByPlat(Request $request, $no_container)
 {
     try {
-        $activity = TerminalActivity::where('container_no_container', $no_container)->firstOrFail();
+        $activity = TerminalActivity::where('nomor_container', $no_container)->firstOrFail();
 
         // Validasi
         $request->validate([
@@ -103,7 +103,7 @@ class TerminalActivityController extends Controller
             'foto_keluar_kanan'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
            // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TerminalActivity::where('container_no_container', $request->no_container)
+        $alreadyRecorded = TerminalActivity::where('nomor_container', $request->no_container)
             ->whereNotNull('masuk')
             ->whereNotNull('keluar')
             ->exists();
