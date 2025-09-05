@@ -21,6 +21,6 @@ class TerminalActivity extends Model
 
     public function container()
     {
-        return $this->belongsTo(Container::class);
+        return $this->belongsTo(Container::class, 'no_plat', 'no_plat');
     }
 }
