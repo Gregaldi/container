@@ -8,7 +8,7 @@ class TerminalActivity extends Model
 {
     //
     protected $fillable = [
-        'container_no_plat',
+        'container_no',
         'masuk',
         'keluar',
         'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
@@ -20,6 +20,6 @@ class TerminalActivity extends Model
     ];
     public function containers()
         {
-            return $this->hasMany(Container::class, 'no_plat', 'container_no_plat');
+            return $this->hasMany(Container::class, 'no_plat', 'container_no');
         }
 }

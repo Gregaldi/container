@@ -20,7 +20,8 @@ class TerminalActivityController extends Controller
           try {
             //code...
             $request->validate([
-                'container_no_plat' => 'required|exists:containers,no_plat',
+                // 'container_no_plat' => 'required|exists:containers,no_plat',
+                'container_no' => 'required|exists:containers,nomor_container',    
                 'masuk' => 'required|date',
                 'keluar' => 'nullable|date',
                 'foto_masuk_depan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -96,7 +97,7 @@ class TerminalActivityController extends Controller
   public function updateByPlat(Request $request, $no_plat)
 {
     try {
-        $activity = TerminalActivity::where('container_no_plat', $no_plat)->firstOrFail();
+        $activity = TerminalActivity::where('container_no', $no_plat)->firstOrFail();
 
         // Validasi
         $request->validate([

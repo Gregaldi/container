@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TpsActivity extends Model
 {
     //
-    protected $fillable = ['container_no_plat', 'masuk', 'keluar', 'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
+    protected $fillable = ['container_no', 'masuk', 'keluar', 'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
         'foto_keluar_depan','foto_keluar_belakang','foto_keluar_kanan','foto_keluar_kiri'];
 
     // public function container()
@@ -16,7 +16,7 @@ class TpsActivity extends Model
     // }
     public function containers()
         {
-            return $this->hasMany(Container::class, 'no_plat', 'container_no_plat');
+            return $this->hasMany(Container::class, 'no_plat', 'container_no');
         }
     
 }

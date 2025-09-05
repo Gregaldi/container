@@ -19,10 +19,10 @@ class ContainerController extends Controller
 {
     try {
         $request->validate([
-        'no_plat'               => 'required|string|unique:containers,no_plat',
+        'no_plat'              => 'required|string',
         'size'                 => 'required|string',
         'asal'                 => 'required|string',
-        'no_plat'              => 'required|string|unique:containers',
+        'nomor_container'     => 'required|string|unique:containers,nomor_container',
         'no_seal'              => 'required|string',
         'foto_no_plat'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'foto_no_seal'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -80,13 +80,13 @@ class ContainerController extends Controller
     {
         try {
             // Cari container berdasarkan no_plat
-            $container = Container::where('no_plat', $nomor_container)->firstOrFail();
+            $container = Container::where('nomor_container', $nomor_container)->firstOrFail();
 
             $request->validate([
                 // 'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'size' => 'sometimes|string',
                 'asal' => 'sometimes|string',
-                'no_plat' => 'sometimes|string|unique:containers,no_plat,' . $container->id,
+                'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'no_seal' => 'sometimes|string',
             ]);
 

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             
             // Foreign key ke containers.no_plat
-            $table->string('container_no_plat');
-            $table->foreign('container_no_plat')
-                ->references('no_plat')
+            $table->string('container_no');
+            $table->foreign('container_no')
+                ->references('nomor_container')
                 ->on('containers')
                 ->onDelete('cascade');
 
