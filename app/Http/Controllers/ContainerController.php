@@ -19,10 +19,10 @@ class ContainerController extends Controller
 {
     try {
         $request->validate([
-        'nomor_container'      => 'required|string|unique:containers',
+        'nomor_container'      => 'required|string|unique:containers,nomor_container',
         'size'                 => 'required|string',
         'asal'                 => 'required|string',
-        'no_plat'              => 'required|string|unique:containers,no_plat',
+        'no_plat'              => 'required|string|unique:containers',
         'no_seal'              => 'required|string',
         'foto_no_plat'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'foto_no_seal'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -76,17 +76,17 @@ class ContainerController extends Controller
     }
 
     // Update container
-    public function update(Request $request, $no_plat)
+    public function update(Request $request, $nomor_container)
     {
         try {
             // Cari container berdasarkan no_plat
-            $container = Container::where('no_plat', $no_plat)->firstOrFail();
+            $container = Container::where('nomor_container', $nomor_container)->firstOrFail();
 
             $request->validate([
                 // 'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'size' => 'sometimes|string',
                 'asal' => 'sometimes|string',
-                'no_plat' => 'sometimes|string|unique:containers,no_plat,' . $container->id,
+                'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'no_seal' => 'sometimes|string',
             ]);
 
@@ -107,10 +107,10 @@ class ContainerController extends Controller
 
 
     // Hapus container
-    public function destroy($no_plat)
+    public function destroy($nomor_container)
     {
         try {
-            $container = Container::where('no_plat', $no_plat)->firstOrFail();
+            $container = Container::where('nomor_container', $nomor_container)->firstOrFail();
             $container->delete();
 
             return response()->json([
