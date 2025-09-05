@@ -20,6 +20,6 @@ class TerminalActivity extends Model
     ];
     public function containers()
         {
-            return $this->hasMany(Container::class,);
+            return $this->hasMany(Container::class,'nomor_container', 'container_nomor_container');
         }
 }
