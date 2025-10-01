@@ -13,8 +13,10 @@ return new class extends Migration
     {
       Schema::create('containers', function (Blueprint $table) {
             // $table->id();
-            $table->string('no_plat')->primary();// jadikan primary key
-            $table->string('nomor_container')->unique(); 
+            // $table->string('no_plat')->primary();// jadikan primary key
+            // $table->string('nomor_container')->unique(); 
+            $table->string('nomor_container')->unique(); // identitas unik
+            $table->string('no_plat'); // boleh sama untuk beberapa container
             $table->string('size');
             $table->string('asal');
             $table->string('no_seal');

@@ -19,10 +19,9 @@ class ContainerController extends Controller
 {
     try {
         $request->validate([
-        'no_plat'               => 'required|string|unique:containers,no_plat',
+        'no_plat'              => 'required|string',
         'size'                 => 'required|string',
         'asal'                 => 'required|string',
-        'no_plat'              => 'required|string|unique:containers',
         'no_seal'              => 'required|string',
         'foto_no_plat'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'foto_no_seal'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
