@@ -79,13 +79,13 @@ class ContainerController extends Controller
     {
         try {
             // Cari container berdasarkan no_plat
-            $container = Container::where('no_plat', $nomor_container)->firstOrFail();
+            $container = Container::where('nomor_container', $nomor_container)->firstOrFail();
 
             $request->validate([
                 // 'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'size' => 'sometimes|string',
                 'asal' => 'sometimes|string',
-                'no_plat' => 'sometimes|string|unique:containers,no_plat,' . $container->id,
+                'nomor_container' => 'sometimes|string|unique:containers,nomor_container,' . $container->id,
                 'no_seal' => 'sometimes|string',
             ]);
 

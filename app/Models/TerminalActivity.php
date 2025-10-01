@@ -8,7 +8,7 @@ class TerminalActivity extends Model
 {
     //
     protected $fillable = [
-        'container_no_plat',
+        'container_nomor_container',
         'masuk',
         'keluar',
         'foto_masuk_depan','foto_masuk_belakang','foto_masuk_kanan','foto_masuk_kiri',
@@ -18,9 +18,8 @@ class TerminalActivity extends Model
         'foto_keluar_kanan',
         
     ];
-
-    public function container()
-    {
-        return $this->belongsTo(Container::class, 'no_plat', 'no_plat');
-    }
+    public function containers()
+        {
+            return $this->hasMany(Container::class,'nomor_container', 'container_nomor_container');
+        }
 }

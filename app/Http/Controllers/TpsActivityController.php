@@ -21,10 +21,10 @@ class TpsActivityController extends Controller
             //code...
               $request->validate([
             // 'container_id' => 'required|exists:containers,id',
-            'container_no_plat' => [
+            'container_nomor_container' => [
                 'required',
-                'exists:containers,no_plat',
-                'unique:tps_activities,container_no_plat' // <== tambahkan ini
+                'exists:containers,nomor_container',
+                'unique:tps_activities,container_nomor_container' // <== tambahkan ini
             ],
             'masuk' => 'required|date',
             'keluar' => 'nullable|date',
@@ -37,14 +37,14 @@ class TpsActivityController extends Controller
             'foto_masuk_kanan' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
-         $alreadyIn = TpsActivity::where('container_no_plat', $request->container_no_plat)
+         $alreadyIn = TpsActivity::where('container_nomor_container', $request->container_no)
             ->whereNull('keluar') // artinya masih ada di dalam
             ->exists();
 
         if ($alreadyIn) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kendaraan dengan plat ' . $request->container_no_plat . ' sudah masuk dan belum keluar.',
+                'message' => 'Kendaraan dengan plat ' . $request->container_no . ' sudah masuk dan belum keluar.',
             ], 422);
         }
 
@@ -88,7 +88,7 @@ class TpsActivityController extends Controller
     // Detail activity
     public function show($id)
     {
-        $activity = TpsActivity::with('container')->findOrFail($id);
+        $activity = TpsActivity::with('containers')->findOrFail($id);
         return response()->json($activity);
     }
 
@@ -99,7 +99,7 @@ public function update(Request $request, $nomor_container)
     try {
         // $activity = TpsActivity::findOrFail($id);
   // $activity = TerminalActivity::findOrFail($id);
-         $activity = TpsActivity::where('container_no_plat', $nomor_container)->firstOrFail();
+         $activity = TpsActivity::where('container_nomor_container', $nomor_container)->firstOrFail();
         // Validasi
         $request->validate([
             'masuk' => 'required|date',
@@ -129,7 +129,7 @@ public function update(Request $request, $nomor_container)
   public function updateByPlat(Request $request, $nomor_container)
 {
     try {
-        $activity = TpsActivity::where('container_no_plat', $nomor_container)->firstOrFail();
+        $activity = TpsActivity::where('container_nomor_container', $nomor_container)->firstOrFail();
 
         // Validasi
         $request->validate([
@@ -142,7 +142,7 @@ public function update(Request $request, $nomor_container)
         ]);
 
              // ✅ Cek apakah plat ini sudah pernah masuk DAN keluar
-        $alreadyRecorded = TpsActivity::where('container_no_plat', $nomor_container)
+        $alreadyRecorded = TpsActivity::where('container_nomor_container', $nomor_container)
             ->whereNotNull('masuk')
             ->whereNotNull('keluar')
             ->exists();
@@ -198,7 +198,7 @@ public function update(Request $request, $nomor_container)
   
     public function destroy($nomor_container)
 {
-    $activity = TpsActivity::where('container_no_plat', $nomor_container)->firstOrFail();
+    $activity = TpsActivity::where('container_nomor_container', $nomor_container)->firstOrFail();
     $activity->delete();
 
     return response()->json([
