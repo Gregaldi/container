@@ -6,19 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Container extends Model
 {
-    // protected $primaryKey = 'no_plat';
-    protected $primaryKey = 'nomor_container';
-    public $incrementing = false; // karena bukan auto increment
-    protected $keyType = 'string';
-    protected $fillable = ['nomor_container', 'size', 'asal', 'no_plat', 'no_seal', 'foto_no_plat','foto_no_seal', 'foto_nomor_container'];
+    //
+    protected $fillable = ['container_number','size','status'];
 
-    public function terminalActivities()
-    {
-        return $this->hasMany(TerminalActivity::class);
-    }
 
-    public function tpsActivities()
-    {
-        return $this->hasMany(TpsActivity::class);
+    public function movements() {
+      return $this->hasMany(ContainerMovement::class);
     }
 }

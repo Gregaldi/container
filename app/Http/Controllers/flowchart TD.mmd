@@ -1,0 +1,17 @@
+flowchart TD
+  A[Kapal bongkar kontainer] --> B[Truk muat 1 atau lebih kontainer]
+  B --> C[Petugas buka Menu Check-In TPS]
+  C --> D{Iterasi per kontainer}
+  D --> E[Input nomor container]
+  D --> F[Input plat truk masuk]
+  D --> G[Input seal pelayaran dan seal TPS]
+  D --> H[Upload foto - depan kanan kiri belakang]
+  E & F & G & H --> I[Validasi dan simpan record Check-IN]
+  I --> J[Update status container jadi IN_TPS]
+  J --> K[Proses di TPS ]
+  K --> L[Petugas buka Menu Check-Out]
+  L --> M[Input nomor container]
+  L --> N[Input plat truk keluar dan seal pelayaran]
+  L --> O[Upload foto - depan kanan kiri belakang]
+  M & N & O --> P[Validasi dan simpan record Check-OUT]
+  P --> Q[Update status container jadi OUT dan generate bukti/ laporan]
