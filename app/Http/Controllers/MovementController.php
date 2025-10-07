@@ -80,7 +80,7 @@ class MovementController extends Controller
             return DB::transaction(function () use ($request) {
                 $container = Container::firstOrCreate(
                     ['container_number' => $request->container_number],
-                    ['status' => 'out']
+                    ['status' => 'not found']
                 );
 
                 // CEK STATUS
