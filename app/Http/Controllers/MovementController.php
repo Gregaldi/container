@@ -34,6 +34,16 @@ class MovementController extends Controller
 
             $movements = $query->orderBy('timestamp', 'desc')->get();
 
+            // Ubah path foto menjadi URL publik
+            $movements->transform(function ($movement) {
+                if (is_array($movement->photos)) {
+                    foreach ($movement->photos as $key => $path) {
+                        $movement->photos[$key] = url('storage/' . $path);
+                    }
+                }
+                return $movement;
+            });
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Container movement history retrieved successfully',
@@ -78,7 +88,7 @@ class MovementController extends Controller
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
                     $file = $request->file($key);
                     $path = $file->storeAs("public/{$basePath}", $key . '.' . $file->getClientOriginalExtension());
-                    $photos[$key] = str_replace('public/', '', $path);
+                    $photos[$key] = url('storage/' . str_replace('public/', '', $path));
                 }
 
                 ContainerMovements::create([
@@ -142,7 +152,7 @@ class MovementController extends Controller
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
                     $file = $request->file($key);
                     $path = $file->storeAs("public/{$basePath}", $key . '.' . $file->getClientOriginalExtension());
-                    $photos[$key] = str_replace('public/', '', $path);
+                    $photos[$key] = url('storage/' . str_replace('public/', '', $path));
                 }
 
                 ContainerMovements::create([
@@ -186,6 +196,16 @@ class MovementController extends Controller
             $container = Container::where('container_number', $container_number)
                 ->with('movements')
                 ->firstOrFail();
+
+            // Ubah path foto menjadi URL publik
+            $container->movements->transform(function ($movement) {
+                if (is_array($movement->photos)) {
+                    foreach ($movement->photos as $key => $path) {
+                        $movement->photos[$key] = url('storage/' . $path);
+                    }
+                }
+                return $movement;
+            });
 
             return response()->json([
                 'status' => 'success',
