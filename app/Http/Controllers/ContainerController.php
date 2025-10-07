@@ -18,6 +18,17 @@ class ContainerController extends Controller
         try {
             $containers = Container::with('movements')->latest()->get();
 
+            // Transform photos ke URL publik
+            $containers->transform(function ($container) {
+                $container->movements->transform(function ($movement) {
+                    if (is_array($movement->photos)) {
+                        $movement->photos = array_map(fn($path) => url($path), $movement->photos);
+                    }
+                    return $movement;
+                });
+                return $container;
+            });
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Container list retrieved successfully',
@@ -42,6 +53,7 @@ class ContainerController extends Controller
             $validated = $request->validate([
                 'container_number' => 'required|string|max:255|unique:containers,container_number',
                 'size' => 'nullable|string|max:50',
+                'asal' => 'nullable|string|max:100',
             ]);
 
             $container = Container::create([
@@ -75,6 +87,14 @@ class ContainerController extends Controller
             $container = Container::where('container_number', $container_number)
                 ->with('movements')
                 ->firstOrFail();
+
+            // Transform photos ke URL publik
+            $container->movements->transform(function ($movement) {
+                if (is_array($movement->photos)) {
+                    $movement->photos = array_map(fn($path) => url($path), $movement->photos);
+                }
+                return $movement;
+            });
 
             return response()->json([
                 'status' => 'success',
