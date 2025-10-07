@@ -7,31 +7,65 @@ use Illuminate\Http\Request;
 
 class ContainerController extends Controller
 {
+    /**
+     * GET /api/containers
+     * Menampilkan semua container
+     */
+    public function index()
+    {
+        $containers = Container::with('movements')->latest()->get();
 
-    // POST /api/containers
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Container list retrieved successfully',
+            'data' => $containers,
+        ]);
+    }
+
+    /**
+     * POST /api/containers
+     * Menyimpan data container baru
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'container_number' => 'required|string|unique:containers,container_number',
-            'size' => 'nullable|string',
+        $validated = $request->validate([
+            'container_number' => 'required|string|max:255|unique:containers,container_number',
+            'size' => 'nullable|string|max:50',
         ]);
 
         $container = Container::create([
-            'container_number' => $request->container_number,
-            'size' => $request->size,
-            'status' => null, // default di luar TPS
+            'container_number' => $validated['container_number'],
+            'size' => $validated['size'] ?? null,
+            'status' => 'OUT', // default status awal
         ]);
 
-        return response()->json($container, 201);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Container created successfully',
+            'data' => $container,
+        ], 201);
     }
 
-    // GET /api/containers/{container_number}
+    /**
+     * GET /api/containers/{container_number}
+     * Menampilkan detail container berdasarkan nomor
+     */
     public function show($container_number)
     {
         $container = Container::where('container_number', $container_number)
             ->with('movements')
-            ->firstOrFail();
+            ->first();
 
-        return response()->json($container);
+        if (!$container) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Container not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $container,
+        ]);
     }
 }
