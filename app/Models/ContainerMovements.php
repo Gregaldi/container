@@ -12,6 +12,7 @@ class ContainerMovements extends Model
 
     protected $casts = [
     'photos' => 'array',
+    'photos_out' => 'array',
     'timestamp' => 'datetime'
     ];
 
