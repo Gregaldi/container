@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Container;
-use App\Models\ContainerMovement;
+use App\Models\ContainerMovements;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MovementController extends Controller
 {
-          public function index(Request $request)
+    public function index(Request $request)
     {
-        $query = ContainerMovement::with('container');
+        $query = ContainerMovements::with('container');
 
         // Filter berdasarkan container_id
         if ($request->filled('container_id')) {
@@ -69,7 +69,7 @@ class MovementController extends Controller
                 $photos[$key] = str_replace('public/', '', $path);
             }
 
-            ContainerMovement::create([
+            ContainerMovements::create([
                 'container_id' => $container->id,
                 'direction'    => 'in',
                 'truck_plate'  => $request->truck_plate,
@@ -117,7 +117,7 @@ class MovementController extends Controller
                 $photos[$key] = str_replace('public/', '', $path);
             }
 
-            ContainerMovement::create([
+            ContainerMovements::create([
                 'container_id'     => $container->id,
                 'direction'        => 'out',
                 'truck_plate_out'  => $request->truck_plate_out,
