@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('truck_plate_out')->nullable();
             $table->string('seal_ship');
             $table->string('seal_tps')->nullable();
-            $table->json('photos');
+            $table->json('photos')->nullable();
+            $table->json('photos_out')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('timestamp')->useCurrent();
             $table->timestamps();

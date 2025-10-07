@@ -181,7 +181,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
-                    'photos'           => $photos,
+                    'photos_out'           => $photos,
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
                 ]);
