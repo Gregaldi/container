@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Container;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 class ContainerController extends Controller
 {
@@ -13,13 +15,21 @@ class ContainerController extends Controller
      */
     public function index()
     {
-        $containers = Container::with('movements')->latest()->get();
+        try {
+            $containers = Container::with('movements')->latest()->get();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Container list retrieved successfully',
-            'data' => $containers,
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Container list retrieved successfully',
+                'data' => $containers,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve containers',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -28,22 +38,30 @@ class ContainerController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'container_number' => 'required|string|max:255|unique:containers,container_number',
-            'size' => 'nullable|string|max:50',
-        ]);
+        try {
+            $validated = $request->validate([
+                'container_number' => 'required|string|max:255|unique:containers,container_number',
+                'size' => 'nullable|string|max:50',
+            ]);
 
-        $container = Container::create([
-            'container_number' => $validated['container_number'],
-            'size' => $validated['size'] ?? null,
-            'status' => 'OUT', // default status awal
-        ]);
+            $container = Container::create([
+                'container_number' => $validated['container_number'],
+                'size' => $validated['size'] ?? null,
+                'status' => 'OUT', // default status
+            ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Container created successfully',
-            'data' => $container,
-        ], 201);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Container created successfully',
+                'data' => $container,
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create container',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -52,20 +70,26 @@ class ContainerController extends Controller
      */
     public function show($container_number)
     {
-        $container = Container::where('container_number', $container_number)
-            ->with('movements')
-            ->first();
+        try {
+            $container = Container::where('container_number', $container_number)
+                ->with('movements')
+                ->firstOrFail();
 
-        if (!$container) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $container,
+            ]);
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Container not found',
             ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve container',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $container,
-        ]);
     }
 }
