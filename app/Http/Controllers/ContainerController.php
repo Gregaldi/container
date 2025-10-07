@@ -19,7 +19,7 @@ class ContainerController extends Controller
         $container = Container::create([
             'container_number' => $request->container_number,
             'size' => $request->size,
-            'status' => 'out', // default di luar TPS
+            'status' => null, // default di luar TPS
         ]);
 
         return response()->json($container, 201);

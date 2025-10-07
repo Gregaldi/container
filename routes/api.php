@@ -22,6 +22,7 @@ Route::get('/ping', function () {
 // Route::apiResource('tps-activities', TpsActivityController::class);
 
 Route::post('/containers', [ContainerController::class, 'store']);
+Route::get('/containers', [ContainerController::class, 'index']);
 Route::get('/containers/{container_number}', [ContainerController::class, 'show']);
 Route::get('/container-movements', [MovementController::class, 'index']);
 Route::post('/movements/in', [MovementController::class, 'storeIn']);
