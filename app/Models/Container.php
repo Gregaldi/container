@@ -10,7 +10,9 @@ class Container extends Model
     protected $fillable = ['container_number','size','status'];
 
 
-    public function movements() {
-      return $this->hasMany(ContainerMovement::class);
+
+     public function movements()
+    {
+        return $this->hasMany(ContainerMovement::class, 'container_id');
     }
 }

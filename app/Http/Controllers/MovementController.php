@@ -9,6 +9,36 @@ use Illuminate\Support\Facades\DB;
 
 class MovementController extends Controller
 {
+          public function index(Request $request)
+    {
+        $query = ContainerMovement::with('container');
+
+        // Filter berdasarkan container_id
+        if ($request->filled('container_id')) {
+            $query->where('container_id', $request->container_id);
+        }
+
+        // Filter berdasarkan arah (IN / OUT)
+        if ($request->filled('direction')) {
+            $query->where('direction', strtoupper($request->direction));
+        }
+
+        // Filter berdasarkan tanggal
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('timestamp', [
+                $request->start_date,
+                $request->end_date,
+            ]);
+        }
+
+        $movements = $query->orderBy('timestamp', 'desc')->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Container movement history retrieved successfully',
+            'data' => $movements,
+        ]);
+    }
     // POST /api/movements/in
     public function storeIn(Request $request)
     {
@@ -104,7 +134,7 @@ class MovementController extends Controller
     }
 
     // GET /api/movements/{container_number}
-    public function index($container_number)
+    public function detailindex($container_number)
     {
         $container = Container::where('container_number', $container_number)
             ->with('movements')

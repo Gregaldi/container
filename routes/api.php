@@ -23,7 +23,7 @@ Route::get('/ping', function () {
 
 Route::post('/containers', [ContainerController::class, 'store']);
 Route::get('/containers/{container_number}', [ContainerController::class, 'show']);
-
+Route::get('/container-movements', [MovementController::class, 'index']);
 Route::post('/movements/in', [MovementController::class, 'storeIn']);
 Route::post('/movements/out', [MovementController::class, 'storeOut']);
-Route::get('/movements/{container_number}', [MovementController::class, 'index']);
+Route::get('/movements/{container_number}', [MovementController::class, 'detailindex']);

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class ContainerController extends Controller
 {
+
     // POST /api/containers
     public function store(Request $request)
     {

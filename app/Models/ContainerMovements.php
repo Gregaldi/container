@@ -16,7 +16,8 @@ class ContainerMovements extends Model
     ];
 
 
-    public function container() {
-    return $this->belongsTo(Container::class);
+    public function container()
+    {
+        return $this->belongsTo(Container::class, 'container_id');
     }
 }
