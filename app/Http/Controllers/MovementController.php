@@ -11,11 +11,7 @@ use Exception;
 
 class MovementController extends Controller
 {
-    /**
-     * GET /api/movements
-     * Menampilkan daftar riwayat pergerakan kontainer
-     */
-       public function index(Request $request)
+    public function index(Request $request)
     {
         try {
             $query = ContainerMovements::with('container');
@@ -34,15 +30,13 @@ class MovementController extends Controller
 
             $movements = $query->orderBy('timestamp', 'desc')->get();
 
-            // Ubah path foto menjadi URL publik
-            // $movements->transform(function ($movement) {
-            //     if (is_array($movement->photos)) {
-            //         foreach ($movement->photos as $key => $path) {
-            //             $movement->photos[$key] = url('storage/' . $path);
-            //         }
-            //     }
-            //     return $movement;
-            // });
+            // Transform photos ke URL publik
+            $movements->transform(function ($movement) {
+                if (is_array($movement->photos)) {
+                    $movement->photos = array_map(fn($path) => url($path), $movement->photos);
+                }
+                return $movement;
+            });
 
             return response()->json([
                 'status' => 'success',
@@ -58,10 +52,6 @@ class MovementController extends Controller
         }
     }
 
-    /**
-     * POST /api/movements/in
-     * Mencatat kontainer masuk ke TPS
-     */
     public function storeIn(Request $request)
     {
         try {
@@ -78,10 +68,9 @@ class MovementController extends Controller
             return DB::transaction(function () use ($request) {
                 $container = Container::firstOrCreate(
                     ['container_number' => $request->container_number],
-                    ['status' => 'in']
+                    ['status' => 'out'] // default out
                 );
 
-                // CEK STATUS
                 if ($container->status === 'in') {
                     return response()->json([
                         'status' => 'error',
@@ -102,7 +91,7 @@ class MovementController extends Controller
                     $file = $request->file($key);
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
-                    $photos[$key] = $basePath . '/' . $fileName; // simpan path relatif
+                    $photos[$key] = $basePath . '/' . $fileName;
                 }
 
                 ContainerMovements::create([
@@ -132,10 +121,6 @@ class MovementController extends Controller
         }
     }
 
-    /**
-     * POST /api/movements/out
-     * Mencatat kontainer keluar dari TPS
-     */
     public function storeOut(Request $request)
     {
         try {
@@ -152,7 +137,6 @@ class MovementController extends Controller
             return DB::transaction(function () use ($request) {
                 $container = Container::where('container_number', $request->container_number)->firstOrFail();
 
-                // CEK STATUS
                 if ($container->status !== 'in') {
                     return response()->json([
                         'status' => 'error',
@@ -181,7 +165,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
-                    'photos_out'       => $photos,
+                    'photos'           => $photos, // gunakan kolom photos saja
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
                 ]);
@@ -207,10 +191,6 @@ class MovementController extends Controller
         }
     }
 
-    /**
-     * GET /api/movements/{container_number}
-     * Menampilkan detail pergerakan kontainer berdasarkan nomor
-     */
     public function detailindex($container_number)
     {
         try {
@@ -220,11 +200,7 @@ class MovementController extends Controller
 
             $container->movements->transform(function ($movement) {
                 if (is_array($movement->photos)) {
-                    $photos = [];
-                    foreach ($movement->photos as $key => $path) {
-                        $photos[$key] = url($path);
-                    }
-                    $movement->photos = $photos;
+                    $movement->photos = array_map(fn($path) => url($path), $movement->photos);
                 }
                 return $movement;
             });
