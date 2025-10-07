@@ -38,7 +38,7 @@ class MovementController extends Controller
             $movements->transform(function ($movement) {
                 if (is_array($movement->photos)) {
                     foreach ($movement->photos as $key => $path) {
-                        $movement->photos[$key] = url('storage/' . $path);
+                        $movement->photos[$key] = url($path);
                     }
                 }
                 return $movement;
@@ -83,12 +83,19 @@ class MovementController extends Controller
 
                 $ts = now()->format('YmdHis');
                 $basePath = "containers/{$container->container_number}/in/{$ts}";
-                $photos = [];
+                $publicPath = public_path($basePath);
 
+                // buat folder jika belum ada
+                if (!file_exists($publicPath)) {
+                    mkdir($publicPath, 0775, true);
+                }
+
+                $photos = [];
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
                     $file = $request->file($key);
-                    $path = $file->storeAs("public/{$basePath}", $key . '.' . $file->getClientOriginalExtension());
-                    $photos[$key] = url('storage/' . str_replace('public/', '', $path));
+                    $fileName = $key . '.' . $file->getClientOriginalExtension();
+                    $file->move($publicPath, $fileName);
+                    $photos[$key] = url($basePath . '/' . $fileName);
                 }
 
                 ContainerMovements::create([
@@ -147,12 +154,18 @@ class MovementController extends Controller
 
                 $ts = now()->format('YmdHis');
                 $basePath = "containers/{$container->container_number}/out/{$ts}";
-                $photos = [];
+                $publicPath = public_path($basePath);
 
+                if (!file_exists($publicPath)) {
+                    mkdir($publicPath, 0775, true);
+                }
+
+                $photos = [];
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
                     $file = $request->file($key);
-                    $path = $file->storeAs("public/{$basePath}", $key . '.' . $file->getClientOriginalExtension());
-                    $photos[$key] = url('storage/' . str_replace('public/', '', $path));
+                    $fileName = $key . '.' . $file->getClientOriginalExtension();
+                    $file->move($publicPath, $fileName);
+                    $photos[$key] = url($basePath . '/' . $fileName);
                 }
 
                 ContainerMovements::create([
@@ -197,11 +210,10 @@ class MovementController extends Controller
                 ->with('movements')
                 ->firstOrFail();
 
-            // Ubah path foto menjadi URL publik
             $container->movements->transform(function ($movement) {
                 if (is_array($movement->photos)) {
                     foreach ($movement->photos as $key => $path) {
-                        $movement->photos[$key] = url('storage/' . $path);
+                        $movement->photos[$key] = url($path);
                     }
                 }
                 return $movement;
