@@ -21,8 +21,9 @@ Route::get('/ping', function () {
 // Route::post('/tps-activities/update/{no_plat}', [TpsActivityController::class, 'updateByPlat']);
 // Route::apiResource('tps-activities', TpsActivityController::class);
 
-Route::post('/containers', [ContainerController::class, 'store']);
-Route::get('/containers', [ContainerController::class, 'index']);
+// Route::post('/containers', [ContainerController::class, 'store']);
+// Route::get('/containers', [ContainerController::class, 'index']);
+Route::apiResource('containers', ContainerController::class);
 Route::get('/containers/{container_number}', [ContainerController::class, 'show']);
 Route::get('/container-movements', [MovementController::class, 'index']);
 Route::post('/movements/in', [MovementController::class, 'storeIn']);
