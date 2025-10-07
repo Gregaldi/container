@@ -128,6 +128,7 @@ class MovementController extends Controller
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
                 'seal_ship'        => 'required|string',
+                'seal_tps'        => 'required|string',
                 'front'            => 'required|image',
                 'left'             => 'required|image',
                 'right'            => 'required|image',
@@ -165,6 +166,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
+                    "seal_tps"         => $request->seal_tps,
                     'photos_out'       => $photos, // gunakan kolom photos saja
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
