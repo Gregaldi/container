@@ -15,7 +15,7 @@ class MovementController extends Controller
      * GET /api/movements
      * Menampilkan daftar riwayat pergerakan kontainer
      */
-    public function index(Request $request)
+       public function index(Request $request)
     {
         try {
             $query = ContainerMovements::with('container');
@@ -37,11 +37,9 @@ class MovementController extends Controller
             // Ubah path foto menjadi URL publik
             $movements->transform(function ($movement) {
                 if (is_array($movement->photos)) {
-                    $photos = [];
                     foreach ($movement->photos as $key => $path) {
-                        $photos[$key] = url($path);
+                        $movement->photos[$key] = url('storage/' . $path);
                     }
-                    $movement->photos = $photos;
                 }
                 return $movement;
             });
