@@ -52,8 +52,8 @@ class ContainerController extends Controller
         try {
             $validated = $request->validate([
                 'container_number' => 'required|string|max:255|unique:containers,container_number',
-                'size' => 'nullable|string|max:50',
-                'asal' => 'nullable|string|max:100',
+                'size' => 'required|string|max:50',
+                'asal' => 'required|string|max:100',
             ]);
 
             $container = Container::create([
