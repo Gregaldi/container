@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('container_number')->unique();
             $table->string('size')->nullable();
             $table->string('asal')->nullable();
-            $table->enum('status', ['in','out'])->default('out');
+            $table->enum('status', ['in','out','notfound'])->default('notfound');
             $table->timestamps();
         });
     }

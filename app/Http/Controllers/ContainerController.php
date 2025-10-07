@@ -48,7 +48,7 @@ class ContainerController extends Controller
                 'container_number' => $validated['container_number'],
                 'size' => $validated['size'] ?? null,
                 'asal' => $validated['asal'] ?? null,
-                'status' => 'NOT FOUND', // default status
+                'status' => 'notfound', // default status
             ]);
 
             return response()->json([
