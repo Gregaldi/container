@@ -35,14 +35,14 @@ class MovementController extends Controller
             $movements = $query->orderBy('timestamp', 'desc')->get();
 
             // Ubah path foto menjadi URL publik
-            $movements->transform(function ($movement) {
-                if (is_array($movement->photos)) {
-                    foreach ($movement->photos as $key => $path) {
-                        $movement->photos[$key] = url('storage/' . $path);
-                    }
-                }
-                return $movement;
-            });
+            // $movements->transform(function ($movement) {
+            //     if (is_array($movement->photos)) {
+            //         foreach ($movement->photos as $key => $path) {
+            //             $movement->photos[$key] = url('storage/' . $path);
+            //         }
+            //     }
+            //     return $movement;
+            // });
 
             return response()->json([
                 'status' => 'success',
