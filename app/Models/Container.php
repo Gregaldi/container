@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Container extends Model
 {
     //
-    protected $fillable = ['container_number','size','status'];
+    protected $fillable = ['container_number','size','asal','status'];
 
 
 

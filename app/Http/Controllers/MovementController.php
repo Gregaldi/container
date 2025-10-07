@@ -140,7 +140,7 @@ class MovementController extends Controller
                 if ($container->status !== 'in') {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Container tidak berada di TPS, tidak bisa keluar',
+                        'message' => 'Container tidak berada di TPS',
                     ], 422);
                 }
 
