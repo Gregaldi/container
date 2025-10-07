@@ -47,7 +47,8 @@ class ContainerController extends Controller
             $container = Container::create([
                 'container_number' => $validated['container_number'],
                 'size' => $validated['size'] ?? null,
-                'status' => 'OUT', // default status
+                'asal' => $validated['asal'] ?? null,
+                'status' => 'NOT FOUND', // default status
             ]);
 
             return response()->json([
