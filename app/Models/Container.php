@@ -13,6 +13,6 @@ class Container extends Model
 
      public function movements()
     {
-        return $this->hasMany(ContainerMovement::class, 'container_id');
+        return $this->hasMany(ContainerMovements::class, 'container_id');
     }
 }
