@@ -138,6 +138,7 @@ class MovementController extends Controller
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
                 'seal_ship'        => 'required|string',
+                'seal_tps'         => 'required|string',
                 'front'            => 'required|image',
                 'left'             => 'required|image',
                 'right'            => 'required|image',
@@ -146,6 +147,13 @@ class MovementController extends Controller
 
             return DB::transaction(function () use ($request) {
                 $container = Container::where('container_number', $request->container_number)->firstOrFail();
+
+                if (!$container) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Container tidak ditemukan',
+                    ], 404);
+                }
 
                 if ($container->status !== 'in') {
                     return response()->json([
@@ -175,6 +183,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
+                    'seal_tps'        => $request->seal_tps,
                     'photos_out'       => $photos, // gunakan kolom photos saja
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
