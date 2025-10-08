@@ -67,6 +67,14 @@ class MovementController extends Controller
 
             return DB::transaction(function () use ($request) {
                 // 🔍 Cari container, kalau tidak ada buat baru
+                  $container = Container::where('container_number', $request->container_number)->first();
+
+                if (!$container) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Container tidak ditemukan',
+                    ], 404);
+                }
                 $container = Container::firstOrCreate(
                     ['container_number' => $request->container_number],
                     ['status' => 'out']
