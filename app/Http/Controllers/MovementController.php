@@ -164,7 +164,7 @@ class MovementController extends Controller
                 
                 // 📁 Buat folder dan simpan foto
                 $ts = now()->format('YmdHis');
-                $basePath = "uploads/containers/{$container->container_number}/in/{$ts}";
+                $basePath = "uploads/containers/{$container->container_number}/out/{$ts}";
                 $publicPath = public_path($basePath);
                 if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
