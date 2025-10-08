@@ -161,14 +161,12 @@ class MovementController extends Controller
                         'message' => 'Container tidak berada di TPS',
                     ], 422);
                 }
-
+                
+                // 📁 Buat folder dan simpan foto
                 $ts = now()->format('YmdHis');
-                $basePath = "uploads/containers/{$container->container_number}/out/{$ts}";
+                $basePath = "uploads/containers/{$container->container_number}/in/{$ts}";
                 $publicPath = public_path($basePath);
-
-                if (!file_exists($publicPath)) {
-                    mkdir($publicPath, 0775, true);
-                }
+                if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
@@ -176,7 +174,7 @@ class MovementController extends Controller
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
                     $photos[$key] = $basePath . '/' . $fileName;
-                }
+                }   
 
                 ContainerMovements::create([
                     'container_id'     => $container->id,
