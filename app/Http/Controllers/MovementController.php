@@ -137,7 +137,7 @@ class MovementController extends Controller
             $request->validate([
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
-                'seal_ship'        => 'required|string',
+                'seal_ship'        => 'nullable|string',
                 'seal_tps'         => 'required|string',
                 'front'            => 'required|image',
                 'left'             => 'required|image',
