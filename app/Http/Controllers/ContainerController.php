@@ -104,9 +104,9 @@ class ContainerController extends Controller
                 }
                 return $movement;
             });
-                $container->movements->transform(function ($movement) {
-                if (is_array($movement->photos)) {
-                    $movement->photos = array_map(fn($path) => url($path), $movement->photos_out);
+            $container->movements->transform(function ($movement) {
+                if (is_array($movement->photos_out)) {
+                    $movement->photos_out = array_map(fn($path) => url($path), $movement->photos_out);
                 }
                 return $movement;
             });
