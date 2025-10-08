@@ -137,6 +137,7 @@ class MovementController extends Controller
             $request->validate([
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
+                'seal_ship'        => 'nullable|string',
                 'seal_tps'         => 'required|string',
                 'front'            => 'required|image',
                 'left'             => 'required|image',
@@ -163,7 +164,7 @@ class MovementController extends Controller
                     ], 422);
                 }
 
-                // 📁 Simpan foto
+                // 📁 Simpan fotoss
                 $ts = now()->format('YmdHis');
                 $basePath = "uploads/containers/{$container->container_number}/out/{$ts}";
                 $publicPath = public_path($basePath);
@@ -183,7 +184,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_tps'         => $request->seal_tps,
-                    'photos_out'           => $photos,
+                    'photos_out'        => $photos,
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
                 ]);
