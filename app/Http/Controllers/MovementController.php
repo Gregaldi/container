@@ -57,6 +57,8 @@ class MovementController extends Controller
         try {
             $request->validate([
                 'container_number' => 'required|string',
+                'size'             => 'required|string|max:50',
+                'asal'             => 'required|string|max:100',
                 'truck_plate'      => 'required|string',
                 'seal_ship'        => 'required|string',
                 'front'            => 'required|image',
@@ -77,7 +79,7 @@ class MovementController extends Controller
                 // }
                 $container = Container::firstOrCreate(
                     ['container_number' => $request->container_number],
-                    ['status' => 'out']
+                    ['status' => 'notfound', 'size' => $request->size, 'asal' => $request->asal]
                 );
 
                 // ❌ Jika sudah 'in', tolak
