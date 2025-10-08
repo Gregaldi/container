@@ -28,7 +28,16 @@ class ContainerController extends Controller
                 });
                 return $container;
             });
-
+       // Transform photos ke URL publik
+            $containers->transform(function ($container) {
+                $container->movements->transform(function ($movement) {
+                    if (is_array($movement->photos_out)) {
+                        $movement->photos = array_map(fn($path) => url($path), $movement->photos_out);
+                    }
+                    return $movement;
+                });
+                return $container;
+            });
             return response()->json([
                 'status' => 'success',
                 'message' => 'Container list retrieved successfully',
@@ -92,6 +101,12 @@ class ContainerController extends Controller
             $container->movements->transform(function ($movement) {
                 if (is_array($movement->photos)) {
                     $movement->photos = array_map(fn($path) => url($path), $movement->photos);
+                }
+                return $movement;
+            });
+                $container->movements->transform(function ($movement) {
+                if (is_array($movement->photos)) {
+                    $movement->photos = array_map(fn($path) => url($path), $movement->photos_out);
                 }
                 return $movement;
             });
