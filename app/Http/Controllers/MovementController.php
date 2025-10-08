@@ -66,11 +66,13 @@ class MovementController extends Controller
             ]);
 
             return DB::transaction(function () use ($request) {
+                // 🔍 Cari container, kalau tidak ada buat baru
                 $container = Container::firstOrCreate(
                     ['container_number' => $request->container_number],
-                    ['status' => 'out'] // default out
+                    ['status' => 'out']
                 );
 
+                // ❌ Jika sudah 'in', tolak
                 if ($container->status === 'in') {
                     return response()->json([
                         'status' => 'error',
@@ -78,13 +80,11 @@ class MovementController extends Controller
                     ], 422);
                 }
 
+                // 📁 Buat folder dan simpan foto
                 $ts = now()->format('YmdHis');
                 $basePath = "uploads/containers/{$container->container_number}/in/{$ts}";
                 $publicPath = public_path($basePath);
-
-                if (!file_exists($publicPath)) {
-                    mkdir($publicPath, 0775, true);
-                }
+                if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
@@ -94,6 +94,7 @@ class MovementController extends Controller
                     $photos[$key] = $basePath . '/' . $fileName;
                 }
 
+                // 🧾 Catat pergerakan 'in'
                 ContainerMovements::create([
                     'container_id' => $container->id,
                     'direction'    => 'in',
@@ -105,6 +106,7 @@ class MovementController extends Controller
                     'timestamp'    => now(),
                 ]);
 
+                // 🚦 Update status container menjadi in
                 $container->update(['status' => 'in']);
 
                 return response()->json([
@@ -128,7 +130,7 @@ class MovementController extends Controller
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
                 'seal_ship'        => 'required|string',
-                'seal_tps'        => 'required|string',
+                'seal_tps'         => 'required|string',
                 'front'            => 'required|image',
                 'left'             => 'required|image',
                 'right'            => 'required|image',
@@ -136,8 +138,17 @@ class MovementController extends Controller
             ]);
 
             return DB::transaction(function () use ($request) {
-                $container = Container::where('container_number', $request->container_number)->firstOrFail();
+                // 🔍 Pastikan container ada
+                $container = Container::where('container_number', $request->container_number)->first();
 
+                if (!$container) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Container tidak ditemukan',
+                    ], 404);
+                }
+
+                // ❌ Pastikan status terakhir adalah 'in'
                 if ($container->status !== 'in') {
                     return response()->json([
                         'status' => 'error',
@@ -145,13 +156,11 @@ class MovementController extends Controller
                     ], 422);
                 }
 
+                // 📁 Simpan foto
                 $ts = now()->format('YmdHis');
                 $basePath = "uploads/containers/{$container->container_number}/out/{$ts}";
                 $publicPath = public_path($basePath);
-
-                if (!file_exists($publicPath)) {
-                    mkdir($publicPath, 0775, true);
-                }
+                if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
                 foreach (['front', 'left', 'right', 'rear'] as $key) {
@@ -161,17 +170,19 @@ class MovementController extends Controller
                     $photos[$key] = $basePath . '/' . $fileName;
                 }
 
+                // 🧾 Catat pergerakan keluar
                 ContainerMovements::create([
                     'container_id'     => $container->id,
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
-                    "seal_tps"         => $request->seal_tps,
-                    'photos_out'       => $photos, // gunakan kolom photos saja
+                    'seal_tps'         => $request->seal_tps,
+                    'photos'           => $photos,
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
                 ]);
 
+                // 🚦 Update status menjadi 'out'
                 $container->update(['status' => 'out']);
 
                 return response()->json([
@@ -192,6 +203,7 @@ class MovementController extends Controller
             ], 500);
         }
     }
+
 
     public function detailindex($container_number)
     {
