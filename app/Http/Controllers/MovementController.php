@@ -131,7 +131,7 @@ class MovementController extends Controller
         }
     }
 
- public function storeOut(Request $request)
+    public function storeOut(Request $request)
     {
         try {
             $request->validate([
@@ -159,7 +159,20 @@ class MovementController extends Controller
                         'message' => 'Container tidak berada di TPS',
                     ], 422);
                 }
-                
+
+                // ✅ Ambil seal_ship lama dari record 'in' terakhir jika tidak dikirim di request
+                $sealShip = $request->seal_ship;
+                if (empty($sealShip)) {
+                    $lastInMovement = ContainerMovements::where('container_id', $container->id)
+                        ->where('direction', 'in')
+                        ->latest('timestamp')
+                        ->first();
+
+                    if ($lastInMovement && !empty($lastInMovement->seal_ship)) {
+                        $sealShip = $lastInMovement->seal_ship;
+                    }
+                }
+
                 // 📁 Buat folder dan simpan foto
                 $ts = now()->format('YmdHis');
                 $basePath = "uploads/containers/{$container->container_number}/out/{$ts}";
@@ -172,19 +185,21 @@ class MovementController extends Controller
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
                     $photos[$key] = $basePath . '/' . $fileName;
-                }   
+                }
 
+                // ✅ Simpan pergerakan keluar
                 ContainerMovements::create([
                     'container_id'     => $container->id,
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
-                    'seal_ship'        => $request->seal_ship,
+                    'seal_ship'        => $sealShip, // gunakan hasil pencarian
                     'seal_tps'         => $request->seal_tps,
-                    'photos_out'       => $photos, // gunakan kolom photos saja
+                    'photos_out'       => $photos,
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
                 ]);
 
+                // Update status container
                 $container->update(['status' => 'out']);
 
                 return response()->json([
@@ -205,6 +220,7 @@ class MovementController extends Controller
             ], 500);
         }
     }
+
 
 
     public function detailindex($container_number)
