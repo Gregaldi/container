@@ -62,8 +62,6 @@ class MovementController extends Controller
                 'truck_plate'      => 'required|string',
                 'seal_ship'        => 'required|string',
                 'front'            => 'required|image',
-                'left'             => 'required|image',
-                'right'            => 'required|image',
                 'rear'             => 'required|image',
             ]);
 
@@ -97,7 +95,7 @@ class MovementController extends Controller
                 if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
-                foreach (['front', 'left', 'right', 'rear'] as $key) {
+                foreach (['front', 'rear'] as $key) {
                     $file = $request->file($key);
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
@@ -142,8 +140,6 @@ class MovementController extends Controller
                 'seal_ship'        => 'nullable|string',
                 'seal_tps'         => 'required|string',
                 'front'            => 'required|image',
-                'left'             => 'required|image',
-                'right'            => 'required|image',
                 'rear'             => 'required|image',
             ]);
 
@@ -171,7 +167,7 @@ class MovementController extends Controller
                 if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
-                foreach (['front', 'left', 'right', 'rear'] as $key) {
+                foreach (['front', 'rear'] as $key) {
                     $file = $request->file($key);
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
@@ -183,7 +179,7 @@ class MovementController extends Controller
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out,
                     'seal_ship'        => $request->seal_ship,
-                    'seal_tps'        => $request->seal_tps,
+                    'seal_tps'         => $request->seal_tps,
                     'photos_out'       => $photos, // gunakan kolom photos saja
                     'notes'            => $request->notes,
                     'timestamp'        => now(),
