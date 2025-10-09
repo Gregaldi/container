@@ -138,7 +138,7 @@ class MovementController extends Controller
                 'container_number' => 'required|string',
                 'truck_plate_out'  => 'required|string',
                 'seal_ship'        => 'nullable|string',
-                'seal_tps'         => 'required|string',
+                'seal_tps'         => 'nullable|string',
                 'front'            => 'required|image',
                 'rear'             => 'required|image',
             ]);
