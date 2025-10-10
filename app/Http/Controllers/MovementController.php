@@ -130,6 +130,48 @@ class MovementController extends Controller
             ], 500);
         }
     }
+    
+    public function findContainerIn(Request $request)
+    {
+        // Jika ada container_number, validasi dan cari satu
+        if ($request->filled('container_number')) {
+            $request->validate([
+                'container_number' => 'required|string',
+            ]);
+
+            $container = \App\Models\Container::where('container_number', $request->container_number)
+                ->where('status', 'in')
+                ->first();
+
+            if (!$container) {
+                return response()->json([
+                    'message' => 'Container tidak ditemukan',
+                ], 404);
+            }
+
+            return response()->json([
+                'container_id' => $container->id,
+                'container_number' => $container->container_number,
+                'status' => $container->status,
+            ]);
+        }
+
+        // Jika tidak ada container_number, tampilkan semua dengan status IN
+        $containers = \App\Models\Container::where('status', 'in')
+            ->orderByDesc('updated_at')
+            ->get(['id as container_id', 'container_number', 'status']);
+
+        if ($containers->isEmpty()) {
+            return response()->json([
+                'message' => 'Tidak ada container dengan status IN',
+            ], 404);
+        }
+
+        return response()->json([
+            'total' => $containers->count(),
+            'containers' => $containers,
+        ]);
+    }
 
     public function storeOut(Request $request)
     {
