@@ -150,8 +150,8 @@ class MovementController extends Controller
             }
 
             return response()->json([
-            'total' => $containers->count(),
-            'containers' => $containers,
+            'total' => $container->count(),
+            'containers' => $container,
         ]);
         }
 
