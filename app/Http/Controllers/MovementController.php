@@ -141,7 +141,8 @@ class MovementController extends Controller
 
             $container = \App\Models\Container::where('container_number', $request->container_number)
                 ->where('status', 'in')
-                ->first();
+                ->orderByDesc('updated_at')
+                ->get(['id as container_id', 'container_number', 'status']);
 
             if (!$container) {
                 return response()->json([
