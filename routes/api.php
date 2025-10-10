@@ -26,7 +26,7 @@ Route::get('/ping', function () {
 Route::apiResource('containers', ContainerController::class);
 // Route::get('/containers/{container_number}', [ContainerController::class, 'show']);
 Route::get('/container-movements', [MovementController::class, 'index']);
-Route::post('/find-container-in', [ContainerController::class, 'findContainerIn']);
+Route::post('/find-container-in/{container_number}', [MovementController::class, 'findContainerIn']);
 Route::post('/movements/in', [MovementController::class, 'storeIn']);
 Route::post('/movements/out', [MovementController::class, 'storeOut']);
 Route::get('/movements/{container_number}', [MovementController::class, 'detailindex']);
