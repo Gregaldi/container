@@ -150,10 +150,9 @@ class MovementController extends Controller
             }
 
             return response()->json([
-                'container_id' => $container->id,
-                'container_number' => $container->container_number,
-                'status' => $container->status,
-            ]);
+            'total' => $containers->count(),
+            'containers' => $containers,
+        ]);
         }
 
         // Jika tidak ada container_number, tampilkan semua dengan status IN
