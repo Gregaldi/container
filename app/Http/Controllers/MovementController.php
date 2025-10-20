@@ -232,7 +232,7 @@ class MovementController extends Controller
                     'container_id'     => $container->id,
                     'direction'        => 'out',
                     'truck_plate_out'  => $request->truck_plate_out ?? '',
-                    'seal_ship'        => $sealShip, // gunakan hasil pencarian
+                    'seal_ship'        => $sealShip ?? '', // gunakan hasil pencarian
                     'seal_tps'         => $request->seal_tps ?? '',
                     'photos_out'       => $photos,
                     'notes'            => $request->notes ?? '',
