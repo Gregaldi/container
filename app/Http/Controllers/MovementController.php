@@ -196,7 +196,8 @@ class MovementController extends Controller
                 }
 
                 // ✅ Ambil seal_ship lama dari record 'in' terakhir jika tidak dikirim di request
-                $sealShip = $request->seal_ship;
+                $sealShip = $request->seal_ship ?? null;
+
                 if (empty($sealShip)) {
                     $lastInMovement = ContainerMovements::where('container_id', $container->id)
                         ->where('direction', 'in')
