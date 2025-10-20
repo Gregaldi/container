@@ -95,12 +95,23 @@ class MovementController extends Controller
                 if (!file_exists($publicPath)) mkdir($publicPath, 0775, true);
 
                 $photos = [];
-                foreach (['front', 'rear'] as $key) {
+                // foreach (['front', 'rear'] as $key) {
+                //     $file = $request->file($key);
+                //     $fileName = $key . '.' . $file->getClientOriginalExtension();
+                //     $file->move($publicPath, $fileName);
+                //     $photos[$key] = $basePath . '/' . $fileName;
+                // }
+
+                   foreach (['front', 'rear'] as $key) {
+                if ($request->hasFile($key)) { // ✅ hanya jika file dikirim
                     $file = $request->file($key);
                     $fileName = $key . '.' . $file->getClientOriginalExtension();
                     $file->move($publicPath, $fileName);
                     $photos[$key] = $basePath . '/' . $fileName;
+                } else {
+                    $photos[$key] = null; // ✅ jika kosong, isi null
                 }
+            }
 
                 // 🧾 Catat pergerakan 'in'
                 ContainerMovements::create([
