@@ -174,7 +174,7 @@ class MovementController extends Controller
                 'truck_plate_out'  => 'nullable|string',
                 'seal_ship'        => 'nullable|string',
                 'seal_tps'         => 'nullable|string',
-                'front'            => 'required|image',
+                'front'            => 'nullable|image',
                 'rear'             => 'nullable|image',
             ]);
 
@@ -216,21 +216,25 @@ class MovementController extends Controller
 
                 $photos = [];
                 foreach (['front', 'rear'] as $key) {
-                    $file = $request->file($key);
-                    $fileName = $key . '.' . $file->getClientOriginalExtension();
-                    $file->move($publicPath, $fileName);
-                    $photos[$key] = $basePath . '/' . $fileName;
-                }
+                        if ($request->hasFile($key)) { // ✅ hanya jika file dikirim
+                            $file = $request->file($key);
+                            $fileName = $key . '.' . $file->getClientOriginalExtension();
+                            $file->move($publicPath, $fileName);
+                            $photos[$key] = $basePath . '/' . $fileName;
+                        } else {
+                        $photos[$key] = ""; // ✅ selalu string kosong kalau tidak ada file
+                        }
+                    }
 
                 // ✅ Simpan pergerakan keluar
                 ContainerMovements::create([
                     'container_id'     => $container->id,
                     'direction'        => 'out',
-                    'truck_plate_out'  => $request->truck_plate_out,
+                    'truck_plate_out'  => $request->truck_plate_out ?? '',
                     'seal_ship'        => $sealShip, // gunakan hasil pencarian
-                    'seal_tps'         => $request->seal_tps,
+                    'seal_tps'         => $request->seal_tps ?? '',
                     'photos_out'       => $photos,
-                    'notes'            => $request->notes,
+                    'notes'            => $request->notes ?? '',
                     'timestamp'        => now(),
                 ]);
 
