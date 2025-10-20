@@ -14,43 +14,61 @@ class ContainerController extends Controller
      * Menampilkan semua container
      */
     public function index()
-    {
-        try {
-            $containers = Container::with('movements')->latest()->get();
+{
+    try {
+        $containers = Container::with('movements')->latest()->get();
 
-            // Transform photos ke URL publik
-            $containers->transform(function ($container) {
-                $container->movements->transform(function ($movement) {
-                    if (is_array($movement->photos)) {
-                        $movement->photos = array_map(fn($path) => url($path), $movement->photos);
-                    }
-                    return $movement;
-                });
-                return $container;
+        // Transform photos dan photos_out ke URL publik
+        $containers->transform(function ($container) {
+
+            $container->movements->transform(function ($movement) {
+
+                // Pastikan photos selalu ada
+                if (!is_array($movement->photos)) {
+                    $movement->photos = [
+                        'front' => '',
+                        'rear'  => '',
+                    ];
+                }
+
+                // Pastikan photos_out selalu ada
+                if (!is_array($movement->photos_out)) {
+                    $movement->photos_out = [
+                        'front' => '',
+                        'rear'  => '',
+                    ];
+                }
+
+                // Ubah path jadi URL publik (hanya jika ada isinya)
+                $movement->photos = array_map(function ($path) {
+                    return $path ? url($path) : '';
+                }, $movement->photos);
+
+                $movement->photos_out = array_map(function ($path) {
+                    return $path ? url($path) : '';
+                }, $movement->photos_out);
+
+                return $movement;
             });
-       // Transform photos ke URL publik
-            $containers->transform(function ($container) {
-                $container->movements->transform(function ($movement) {
-                    if (is_array($movement->photos_out)) {
-                        $movement->photos_out = array_map(fn($path) => url($path), $movement->photos_out);
-                    }
-                    return $movement;
-                });
-                return $container;
-            });
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Container list retrieved successfully',
-                'data' => $containers,
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to retrieve containers',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+
+            return $container;
+        });
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Container list retrieved successfully',
+            'data'    => $containers,
+        ]);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Failed to retrieve containers',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /**
      * POST /api/containers
