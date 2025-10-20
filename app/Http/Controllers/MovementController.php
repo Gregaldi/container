@@ -109,7 +109,7 @@ class MovementController extends Controller
                     $file->move($publicPath, $fileName);
                     $photos[$key] = $basePath . '/' . $fileName;
                 } else {
-                    $photos[$key] = null; // ✅ jika kosong, isi null
+                   $photos[$key] = ""; // ✅ selalu string kosong kalau tidak ada file
                 }
             }
 
