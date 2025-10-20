@@ -160,11 +160,11 @@ class MovementController extends Controller
         try {
             $request->validate([
                 'container_number' => 'required|string',
-                'truck_plate_out'  => 'required|string',
+                'truck_plate_out'  => 'nullable|string',
                 'seal_ship'        => 'nullable|string',
                 'seal_tps'         => 'nullable|string',
                 'front'            => 'required|image',
-                'rear'             => 'required|image',
+                'rear'             => 'nullable|image',
             ]);
 
             return DB::transaction(function () use ($request) {
