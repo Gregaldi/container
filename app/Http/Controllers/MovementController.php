@@ -117,9 +117,9 @@ class MovementController extends Controller
                 ContainerMovements::create([
                     'container_id' => $container->id,
                     'direction'    => 'in',
-                    'truck_plate'  => $request->truck_plate,
-                    'seal_ship'    => $request->seal_ship,
-                    'seal_tps'     => $request->seal_tps,
+                    'truck_plate'  => $request->truck_plate ?? '',
+                    'seal_ship'    => $request->seal_ship ?? '',
+                    'seal_tps'     => $request->seal_tps ?? '',
                     'photos'       => $photos,
                     'notes'        => $request->notes,
                     'timestamp'    => now(),
